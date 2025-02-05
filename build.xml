@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="ijoyplus-all" default="deploy">
+
+ <property name="server.webroot" value="/var/www/html" />
+ <property name="ijoyplus-service.workingdir" value="./ijoyplus-social/" />
+ <property name="repository" value="https://github.com/scottliyq/ijoyplus-service" />
+ <resolvepath propertyName="local.repository.resolved" file="./" />
+ <resolvepath propertyName="ijoyplus-service.workingdir.resolved" file="${ijoyplus-service.workingdir}" />
+
+ <target name="clone" description="Deploys a copy of ijoyplus">
+   <gitclone repository="https://github.com/scottliyq/ijoyplus-service" targetPath="${ijoyplus-service.workingdir.resolved}" />
+ </target>
+
+ <target name="deploy" description="Deploys a copy of ijoyplus-service">
+   <!-- Switch to the version of Drupal I want -->
+   <gitpull repository="${local.repository.resolved}" source="origin"
+            strategy="recursive" keep="true"
+            force="true" quiet="true" norebase="true" />
+   
+   <!-- Put the code in the webroot (remove unwanted files) -->
+  <delete dir="${server.webroot}/joyplus-service" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/joyplus-service" /> 
+   <copy todir="${server.webroot}/joyplus-service" >
+     <fileset dir="joyplus-social">
+     </fileset>
+   </copy>
+
+   <delete dir="${server.webroot}/yii" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/yii" /> 
+   <copy todir="${server.webroot}/yii" >
+     <fileset dir="yii">
+     </fileset>
+   </copy>
+
+  <delete dir="${server.webroot}/joyplus-video" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/joyplus-video" /> 
+   <copy todir="${server.webroot}/joyplus-video" >
+     <fileset dir="joyplus-video">
+     </fileset>
+   </copy>
+
+  <delete dir="${server.webroot}/joyplus-crawler" includeemptydirs="true" verbose="true" failonerror="false" />
+   <mkdir  dir="${server.webroot}/joyplus-crawler" /> 
+   <copy todir="${server.webroot}/joyplus-crawler" >
+     <fileset dir="joyplus-crawler">
+     </fileset>
+   </copy>
+
+   <!-- Make the code live. -->
+   <!--><symlink target="${server.webroot}/ijoyplus-service-${build.time}/drupal" link="${server.webroot}/ijoyplus-service" overwrite="true" />-->
+
+ </target>
+</project>
